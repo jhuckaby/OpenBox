@@ -24,8 +24,6 @@ use Carp ();
 use POSIX qw/:sys_wait_h setsid/;
 use UNIVERSAL qw/isa/;
 
-use Devel::StackTrace;
-
 $| = 1;
 
 sub new {
@@ -67,7 +65,7 @@ sub startup {
 	##
 	$SIG{'__WARN__'} = sub {
 	 	my ($package_name, undef, undef) = caller();
-	 	$self->log_debug( 4, $_[0] . " -- " . Devel::StackTrace->new()->as_string() );
+	 	$self->log_debug( 4, $_[0] );
 	};
 	$SIG{'__DIE__'} = sub {
 		# my ($package_name, undef, undef) = caller();
