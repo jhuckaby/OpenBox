@@ -13,31 +13,31 @@ The OpenBox UI is written in HTML5 / JavaScript, and the background daemons are 
 OpenBox would not be possible without the following awesome tools / libraries:
 
 * [Rsync](http://en.wikipedia.org/wiki/Rsync)
-** An incredible standard Unix / Mac command-line tool for synchronizing folders over the network.
+	* An incredible standard Unix / Mac command-line tool for synchronizing folders over the network.
 * [Cocui - COCoa User Interface mockup](https://github.com/rsms/cocui)
-** This incredible framework allows you to make "native" Mac OS X apps using only HTML5 and JavaScript.
+	* This incredible framework allows you to make "native" Mac OS X apps using only HTML5 and JavaScript.
 * [CocoaDialog](https://github.com/mstratman/cocoadialog)
-** This tool provides command-line access to Mac OS X native dialogs and more.
+	* This tool provides command-line access to Mac OS X native dialogs and more.
 * [Mac::FSEvents](http://search.cpan.org/perldoc?Mac::FSEvents)
-** This is a Perl module which provides access to the Mac OS X FSEvents API, for instant notification for changed files.
+	* This is a Perl module which provides access to the Mac OS X FSEvents API, for instant notification for changed files.
 * [IO::Pty::Easy](http://search.cpan.org/perldoc?IO::Pty::Easy)
-** This module allows a script to drive command-line tools such as Rsync and SSH, even providing passwords when prompted.
+	* This module allows a script to drive command-line tools such as Rsync and SSH, even providing passwords when prompted.
 * [JSON::PP](http://search.cpan.org/perldoc?JSON::PP)
-** A pure Perl implementation of JSON encoding and decoding.
+	* A pure Perl implementation of JSON encoding and decoding.
 * [jQuery](http://jquery.com/)
-** The best JavaScript library ever invented.
+	* The best JavaScript library ever invented.
 * [HTML5 Boilerplate](http://html5boilerplate.com/)
-** Awesome framework for writing HTML5 apps.
+	* Awesome framework for writing HTML5 apps.
 
 And my thanks to the following artists / designers for use of their work:
 
 * [Artua.com](http://www.artua.com/)
-** For their amazing [Mac OS X style Icon set](http://www.iconfinder.com/search/?q=iconset%3Amacosxstyle)
-** Three of these icons were used as the basis to create the OpenBox icon.
+	* For their amazing [Mac OS X style Icon set](http://www.iconfinder.com/search/?q=iconset%3Amacosxstyle)
+	* Three of these icons were used as the basis to create the OpenBox icon.
 * [PixelPress Icons](http://www.pixelpressicons.com/)
-** For their [Whitespace Icon Collection](http://www.pixelpressicons.com/?page_id=118), used on the OpenBox.io website.
+	* For their [Whitespace Icon Collection](http://www.pixelpressicons.com/?page_id=118), used on the OpenBox.io website.
 * [Apple Inc.](http://apple.com)
-** For their awesome background linen pattern.
+	* For their awesome background linen pattern.
 
 # Legal
 
