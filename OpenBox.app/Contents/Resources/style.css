@@ -1,0 +1,50 @@
+/* default.css behaves strangely in coco-iu, cannot override certain browser defaults, such as table padding */
+/* So we have to have our own style.css */
+
+.left { float: left; }
+.right { float: right; }
+.clear { clear: both; }
+
+.invalid {
+	background-color: #fcc;
+}
+
+.caption { font-size:11px; color:#666; cursor:default; }
+td.label { text-align:right; font-weight:bold; white-space:nowrap; padding-right:10px; cursor:default; }
+button.mini { font-size:12px; white-space:nowrap; }
+.folder {
+	padding-left: 20px;
+	background: url(images/folder-16.png) no-repeat 0px center;
+	height: 20px;
+	line-height: 20px;
+	font-size: 12px;
+	cursor:default;
+	
+	white-space: nowrap;
+	overflow:hidden; text-overflow:ellipsis;
+}
+.file_key {
+	padding-left: 20px;
+	background: url(images/page_white_key.png) no-repeat 0px center;
+	height: 20px;
+	line-height: 20px;
+	font-size: 12px;
+	cursor:default;
+	
+	white-space: nowrap;
+	overflow:hidden; text-overflow:ellipsis;
+}
+.table_spacer { height:1px; margin-top:5px; margin-bottom:5px; }
+
+#d_growl_subopts.disabled span { opacity: 0.5; }
+
+#refresh_thingy {
+	
+}
+#refresh_thingy.rotate {
+	-webkit-animation: rotation ease-out 0.5s;
+}
+@-webkit-keyframes rotation {
+    0% {-webkit-transform: rotate(0deg);}
+    100% {-webkit-transform: rotate(-360deg);}
+}

@@ -1,0 +1,33 @@
+{
+	"DebugLevel": 9,
+	"UIDebugLevel": 9,
+	"MaxUIChildren": 2,
+	"FileTypes": {
+		"html": "text/html",
+		"jpg": "image/jpeg",
+		"png": "image/png",
+		"gif": "image/gif",
+		"css": "text/css",
+		"js": "text/javascript",
+		"mp3": "audio/mpeg",
+		"ogg": "audio/ogg",
+		"swf": "application/x-shockwave-flash"
+	},
+	"TTL": 0,
+	"PrefsFileCheckInterval": 1.0,
+	"ProjectMaintInterval": 1.0,
+	"ProgressUpdateInterval": 0.5,
+	"UpsyncRetryInterval": 30,
+	"AutoDownsyncInterval": 60,
+	"IdleTimeout": 30,
+	"BaseRsyncCommand": "/usr/bin/rsync -rptDv",
+	"BaseSSHCommand": "/usr/bin/ssh",
+	"BaseSoundCommand": "/usr/bin/afplay",
+	"BaseClipCommand": "/usr/bin/pbcopy",
+	"SSHOptions": "-oGSSAPIKeyExchange=no -oStrictHostKeyChecking=no -oCheckHostIP=no -oConnectionAttempts=1 -oNumberOfPasswordPrompts=1",
+	"UploadIcon": "Icon-Upload-48.png",
+	"DownloadIcon": "Icon-Download-48.png",
+	"ErrorIcon": "Icon-Error-48.png",
+	"GenericIcon": "Icon.icns",
+	"LaunchAgentConfigFilename": "com.jhuckaby.openboxsyncd.agent.plist"
+}

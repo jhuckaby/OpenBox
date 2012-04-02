@@ -1,0 +1,678 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>...</title>
+		
+		<link rel="stylesheet" href="style.css">
+		
+		<script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="tools.js" type="text/javascript"></script>
+		<script src="app.js" type="text/javascript"></script>
+		<script src="server.js" type="text/javascript"></script>
+		
+		<script type="text/javascript" charset="utf-8">
+			OpenBox.pages.editGeneral = {
+				onActivate: function() {
+					this.project = OpenBox.project;
+				},
+				
+				onDeactivate: function() {
+					
+				}
+			};
+			
+			// editGeneral needs to steal some methods from the easy setup page
+			OpenBox.pages.editGeneral.selectLocalBaseDir = OpenBox.pages.easy.selectLocalBaseDir;
+			OpenBox.pages.editGeneral.setAuthType = OpenBox.pages.easy.setAuthType;
+			OpenBox.pages.editGeneral.selectSSHKeyFile = OpenBox.pages.easy.selectSSHKeyFile;
+			
+			OpenBox.pages.editSync = {
+				onActivate: function() {
+					this.project = OpenBox.project;
+				},
+				
+				onDeactivate: function() {
+					
+				}
+			};
+			
+			OpenBox.pages.editExtras = {
+				onActivate: function() {
+					this.project = OpenBox.project;
+				},
+				
+				setFilterType: function(type) {
+					// set filter type (exclude or include)
+					$('#adv_filter_switch').val(type);
+					$('.filter_include, .filter_exclude').hide();
+					$('.filter_'+type).show();
+					OpenBox.clearError();
+				},
+				
+				setGrowlEnabled: function(enabled) {
+					// set main growl switch, affects sub-switches
+					if (enabled) {
+						$('#adv_growl_sync_start, #adv_growl_sync_end, #adv_growl_error').removeAttr('disabled');
+						$('#d_growl_subopts').removeClass('disabled');
+					}
+					else {
+						$('#adv_growl_sync_start, #adv_growl_sync_end, #adv_growl_error').attr('disabled', 'disabled');
+						$('#d_growl_subopts').addClass('disabled');
+					}
+				},
+				
+				setSoundEnabled: function(enabled) {
+					// set main sound fx switch, affects sub-switches
+					if (enabled) {
+						$('#adv_sound_sync_start, #adv_sound_sync_end, #adv_sound_error').removeAttr('disabled');
+						$('#d_sound_subopts').removeClass('disabled');
+					}
+					else {
+						$('#adv_sound_sync_start, #adv_sound_sync_end, #adv_sound_error').attr('disabled', 'disabled');
+						$('#d_sound_subopts').addClass('disabled');
+					}
+				},
+				
+				setClipboardEnabled: function(enabled) {
+					// set copy-to-clipboard feature on or off
+					if (enabled) {
+						$('#adv_clip_url').removeAttr('disabled');
+					}
+					else {
+						$('#adv_clip_url').attr('disabled', 'disabled');
+					}
+				},
+				
+				onDeactivate: function() {
+					
+				}
+			};
+			
+			OpenBox.badEditField = function(tab_id, field_id) {
+				// mark field as bad, and activate parent tab
+				this.clickTab(tab_id);
+				$('#'+field_id).addClass('invalid').focus();
+			};
+			
+			OpenBox.editSave = function() {
+				// validate all settings and save changes
+				var project = this.project;
+				OpenBox.clearError();
+				$('button').attr('disabled', 'disabled');
+				
+				// general tab
+				project.title = $('#es_project_title').val();
+				if (!project.title.length && !project.easy) {
+					// no title and not easy setup, make up title
+					if (!OpenBox.parent.prefs.projects) OpenBox.parent.prefs.projects = [];
+					var project_num = OpenBox.parent.prefs.projects.length + 1;
+					project.title = "My Box " + project_num;
+				}
+				
+				project.remote_hostname = $('#es_remote_hostname').val();
+				if (!project.remote_hostname.match(/^[\w\-\.]+$/)) return OpenBox.badEditField('editGeneral', 'es_remote_hostname');
+				
+				project.rsync_username = $('#es_rsync_username').val();
+				if (!project.rsync_username.length) return OpenBox.badEditField('editGeneral', 'es_rsync_username');
+				
+				switch (project.rsync_auth_type) {
+					case 'pass':
+						project.rsync_password = $('#es_rsync_password').val();
+						if (!project.rsync_password.length) return OpenBox.badEditField('editGeneral', 'es_rsync_password');
+						
+						project.rsync_ssh_key_file = '';
+						project.rsync_ssh_key_passphrase = '';
+					break;
+					
+					case 'key':
+						project.rsync_password = '';
+					break;
+				}
+				
+				project.remote_base_dir = trim( $('#es_remote_base_dir').val() );
+				if (!project.remote_base_dir.length) return OpenBox.badEditField('editGeneral', 'es_remote_base_dir');				
+				project.remote_base_dir = project.remote_base_dir.replace(/\/$/, '');
+				
+				// sync tab
+				project.auto_downsync = $('#adv_downsync').prop('checked') ? 1 : 0;
+				project.rsync_delete = $('#adv_delete').prop('checked') ? 1 : 0;
+				// project.rsync_compress = $('#adv_compress').prop('checked') ? 1 : 0;
+				project.rsync_backup = $('#adv_backup').prop('checked') ? 1 : 0;
+				project.startup_sync = $('#adv_startup_sync').prop('checked') ? 1 : 0;
+				project.rsync_users_groups = $('#adv_users_groups').prop('checked') ? 1 : 0;
+				
+				project.rsync_kbrate = $('#adv_rsync_kbrate').val();
+				if (project.rsync_kbrate.length && !project.rsync_kbrate.match(/^\d+$/)) return OpenBox.badEditField('editSync', 'adv_rsync_kbrate');
+				
+				project.rsync_symlinks = $('#adv_rsync_symlinks').val();
+				
+				if (project.rsync_delete && project.rsync_backup) {
+					this.doError( "The auto-delete and backup features cannot be used together." );
+					this.clickTab('editSync');
+					return;
+				}
+				
+				// extras tab
+				project.growl = $('#adv_growl').prop('checked') ? 1 : 0;
+				project.growl_sync_start = $('#adv_growl_sync_start').prop('checked') ? 1 : 0;
+				project.growl_sync_end = $('#adv_growl_sync_end').prop('checked') ? 1 : 0;
+				project.growl_errors = $('#adv_growl_error').prop('checked') ? 1 : 0;
+				
+				project.sound = $('#adv_sound').prop('checked') ? 1 : 0;
+				project.sound_sync_start = $('#adv_sound_sync_start').prop('checked') ? 1 : 0;
+				project.sound_sync_end = $('#adv_sound_sync_end').prop('checked') ? 1 : 0;
+				project.sound_errors = $('#adv_sound_error').prop('checked') ? 1 : 0;
+				
+				project.clipboard = $('#adv_clipboard').prop('checked') ? 1 : 0;
+				project.clip_url = $('#adv_clip_url').val();
+				if (project.clipboard == 1) {
+					if (!project.clip_url.length) {
+						this.doError( "If you enable the copy to clipboard feature, you must enter a base URL to your server." );
+						return OpenBox.badEditField('editExtras', 'adv_clip_url');
+					}
+					else if (!project.clip_url.match(/^\w+\:\/\/[\w\-\.]+/)) {
+						this.doError( "The base URL you entered does not appear to be valid." );
+						return OpenBox.badEditField('editExtras', 'adv_clip_url');
+					}
+				}
+				
+				project.exclude_files = $('#ta_filter_exclude').val().replace(/\s+/g, ' ');
+				if (!project.exclude_files.match(/\S/)) project.exclude_files = '';
+				
+				project.include_files = $('#ta_filter_include').val().replace(/\s+/g, ' ');
+				if (!project.include_files.match(/\S/)) project.include_files = '';
+				
+				var temp_opts = $('#ta_ssh_options').val().split(/\n/);
+				var ssh_opts = [];
+				for (var idx = 0, len = temp_opts.length; idx < len; idx++) {
+					var opt = temp_opts[idx];
+					if (opt.length) {
+						ssh_opts.push( '-o' + opt );
+					}
+				}
+				project.ssh_options = ssh_opts.join(" ");
+				
+				// trick app into using 'easy setup' to validate server stuff
+				// this is a nasty hack, TODO: make all validate code global, not part of easy setup page
+				OpenBox.currentPageID = 'easy';
+				OpenBox.pages.easy.project = project;
+				$P().saveSettings_finish = function() {
+					// override finish function, so we can call parent window
+					var project = this.project;
+					project.mod_date = time_now();
+					
+					if (OpenBox.launchArgs.type == 'add') OpenBox.opener.pages.advanced.addProjectFinish(project);
+					else OpenBox.opener.pages.advanced.editProjectFinish(project);
+				};
+				
+				// convenience variables for comparison
+				var p1 = this.oldProject;
+				var p2 = project;
+				
+				// see if user is enabling two-way sync, and delete is enabled too
+				// if so, flag project so daemon performs an initial safety sync
+				if ((p1.auto_downsync == 0) && (p2.auto_downsync == 1) && (p2.rsync_delete == 1)) {
+					project.two_way_delete_safety = 1;
+				}
+				
+				// see if we can skip the server validation step, if nothing has changed
+				if ( 
+					(p1.local_base_dir != p2.local_base_dir) || (p1.remote_hostname != p2.remote_hostname) || 
+					(p1.rsync_username != p2.rsync_username) || (p1.rsync_password != p2.rsync_password) || 
+					(p1.rsync_ssh_key_file != p2.rsync_ssh_key_file) || (p1.remote_base_dir != p2.remote_base_dir) || 
+					(p1.rsync_auth_type != p2.rsync_auth_type) || p2.two_way_delete_safety
+				) {
+					// server changes were made, must re-validate things
+					Dialog.showProgress("Validating settings...");
+					$P().saveSettings_start();
+				}
+				else {
+					// no server changes, jump straight to finish
+					$P().saveSettings_finish();
+				}
+			};
+						
+			var launchArgs = null;
+			var domIsReady = false;
+			var launched = false;
+			
+			function launchEdit() {
+				// launch edit app
+				if (!launched) {
+					launched = true;
+					
+					var project = OpenBox.project = launchArgs.project;
+					OpenBox.launchArgs = launchArgs;
+					
+					switch (launchArgs.type) {
+						case 'add': 
+							document.title = 'Add New Box'; 
+							$('#btn_edit_save').html('Add Box');
+						break;
+						
+						case 'edit': 
+							document.title = 'Editing Box: "' + (project.title || 'Easy Setup') + '"'; 
+							$('#btn_edit_save').html('Save Changes');
+							if (project.easy) $('#es_project_title').attr('placeholder', "(Easy Setup)");
+						break;
+					}
+					
+					// attach click listeners to all tabs
+					$('span.tab').click( function(e) {
+						OpenBox.clickTab( $(this).attr('id').replace(/^tab_/, '') );
+					} );
+
+					// make links work
+					$("a[target='_blank']").mouseup( function(e) {
+						var url = $(this).attr('href');
+						OpenBox.apiPost('launch', { url: url } );
+					} );
+					
+					// capture esc key, close window
+					$(window).keydown( function(e) {
+						if (e.keyCode == 27) {
+							OpenBox.opener.closeEditWindow();
+						}
+					} );
+					
+					// capture click on sound checkboxes to play sounds
+					$('#adv_sound_sync_start, #adv_sound_sync_end, #adv_sound_error').change( function(e) {
+						var me = $(this);
+						if (me.prop('checked')) {
+							var sound_filename = this.id.replace(/^adv_sound_/, '').replace(/_/g, '-') + '.mp3';
+							OpenBox.apiPost('sound', { filename: sound_filename });
+						}
+					} );
+					
+					// populate fields from project:
+					// general tab
+					$('#es_project_title').val( project.title || '' );
+					$('#es_local_base_dir').html( basename(project.local_base_dir) ).attr('title', project.local_base_dir);
+					$('#es_remote_hostname').val( project.remote_hostname || '' );
+					$('#es_rsync_ssh_port').val( project.rsync_ssh_port || '' );
+					$('#es_rsync_username').val( project.rsync_username || '' );
+					$('#es_rsync_password').val( project.rsync_password || '' );
+					$('#es_rsync_ssh_key_file').html( project.rsync_ssh_key_file ? basename(project.rsync_ssh_key_file) : '(Automatic)' );
+					$('#es_remote_base_dir').val( project.remote_base_dir || '/' );
+					OpenBox.pages.editGeneral.setAuthType( project.rsync_auth_type || 'pass' );
+					
+					// sync tab
+					$('#adv_downsync').prop('checked', project.auto_downsync == 1);
+					$('#adv_delete').prop('checked', project.rsync_delete == 1);
+					// $('#adv_compress').prop('checked', project.rsync_compress == 1);
+					$('#adv_backup').prop('checked', project.rsync_backup == 1);
+					$('#adv_startup_sync').prop('checked', project.startup_sync == 1);
+					$('#adv_users_groups').prop('checked', project.rsync_users_groups == 1);
+					$('#adv_rsync_kbrate').val( (project.rsync_kbrate != 0) ? project.rsync_kbrate : '' );
+					$('#adv_rsync_symlinks').val( project.rsync_symlinks );
+					
+					// extras tab
+					$('#adv_growl').prop('checked', project.growl == 1);
+					$('#adv_growl_sync_start').prop('checked', project.growl_sync_start == 1);
+					$('#adv_growl_sync_end').prop('checked', project.growl_sync_end == 1);
+					$('#adv_growl_error').prop('checked', project.growl_errors == 1);
+					OpenBox.pages.editExtras.setGrowlEnabled( project.growl == 1 );
+					
+					$('#adv_sound').prop('checked', project.sound == 1);
+					$('#adv_sound_sync_start').prop('checked', project.sound_sync_start == 1);
+					$('#adv_sound_sync_end').prop('checked', project.sound_sync_end == 1);
+					$('#adv_sound_error').prop('checked', project.sound_errors == 1);
+					OpenBox.pages.editExtras.setSoundEnabled( project.sound == 1 );
+					
+					OpenBox.pages.editExtras.setClipboardEnabled( project.clipboard == 1 );
+					$('#adv_clipboard').prop('checked', project.clipboard == 1);
+					$('#adv_clip_url').val( project.clip_url || '' );
+					
+					OpenBox.pages.editExtras.setFilterType( project.include_files ? 'include' : 'exclude' );
+					
+					$('#ta_filter_exclude').val( (project.exclude_files || '').replace(/\s+/g, "\n") );
+					$('#ta_filter_include').val( (project.include_files || '').replace(/\s+/g, "\n") );
+					
+					// ssh options text area
+					var ssh_opts = [];
+					var temp_opts = (project.ssh_options || '').split(/\s+/);
+					for (var idx = 0, len = temp_opts.length; idx < len; idx++) {
+						var opt = temp_opts[idx];
+						if (opt.match(/\-o(.+)$/)) {
+							ssh_opts.push( RegExp.$1 );
+						}
+					}
+					$('#ta_ssh_options').val( ssh_opts.join("\n") );
+					
+					// copy old project to see what changed
+					OpenBox.oldProject = JSON.parse( JSON.stringify(project) );
+					
+					// activate general tab and unhide page
+					OpenBox.clickTab('editGeneral');
+					$('#container').show();
+				}
+			}
+			
+			$(document).ready(function() {
+				// dom is ready
+				domIsReady = true;
+				if (OpenBox.opener && launchArgs) launchEdit();
+			});
+			
+			document.obInit = function(box, args) {
+				// called by parent window just after open
+				// this MUST be in the document object (quirk of coco-ui, it seems)
+				OpenBox.opener = box;
+				launchArgs = args;
+				if (domIsReady) launchEdit();
+			};
+		</script>
+	</head>
+	<body>
+		<div id="container" style="display:none">
+			<fieldset>
+				
+				<legend>
+					<span id="tab_editGeneral" class="tab">General</span><span id="tab_editSync" class="tab">Sync Options</span><span id="tab_editExtras" class="tab">Extras</span>
+				</legend>
+				
+				<div id="page_editGeneral" class="page" style="display:none">
+					<center><table style="margin:10px;">
+						<tr>
+							<td class="label">Box Name:</td>
+							<td>
+								<input type="text" id="es_project_title" size="30" placeholder="My Box"/>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="caption">Enter a name for your box (displayed in desktop notifications).</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						<tr>
+							<td class="label">Local&nbsp;Folder:</td>
+							<td>
+								<table cellspacing="0" cellpadding="0"><tr>
+									<td><div class="folder" id="es_local_base_dir"></div></td>
+									<td>&nbsp;&nbsp;</td>
+									<td><button class="small" onClick="$P().selectLocalBaseDir()">Choose...</button></td>
+								</tr></table>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="caption">Choose a local folder on your Mac to keep synchronized with your server.  All nested folders and files will be synchronized too!</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						<tr>
+							<td class="label">Hostname:</td>
+							<td>
+								<input type="text" id="es_remote_hostname" size="30" placeholder="my.server.com"/>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="caption">Enter the hostname or IP address of the destination server.</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						<tr>
+							<td class="label">Port:</td>
+							<td>
+								<input type="text" id="es_rsync_ssh_port" size="5" placeholder="22"/>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="caption">If your server has SSH listening on a non-standrd port number, please enter it here.</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						<tr>
+							<td class="label">Username:</td>
+							<td>
+								<input type="text" id="es_rsync_username" size="20"/>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="caption">Enter the username of your SSH / SFTP account on the server.</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						<tr>
+							<td class="label">
+								<select id="es_auth_type" onChange="$P().setAuthType(this.options[this.selectedIndex].value)">
+									<option value="pass">Password</option>
+									<option value="key">SSH Key</option>
+								</select>
+							</td>
+							<td>
+								<div class="auth_pass">
+									<input type="password" id="es_rsync_password" size="20"/>
+								</div>
+								<div class="auth_key" style="display:none;">
+									<table cellspacing="0" cellpadding="0"><tr>
+										<td><div class="file_key" id="es_rsync_ssh_key_file">(Automatic)</div></td>
+										<td>&nbsp;&nbsp;</td>
+										<td><button class="small" onClick="$P().selectSSHKeyFile()">Choose...</button></td>
+									</tr></table>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="caption">
+								<div class="auth_pass">Enter the password you use to login to the server.</div>
+								<div class="auth_key" style="display:none;">
+									<div>Select the SSH private key to authenticate your account on the server.</div>
+									<div style="height:4px;"></div>
+								</div>
+							</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						<tr>
+							<td class="label">Remote&nbsp;Path:</td>
+							<td>
+								<input type="text" id="es_remote_base_dir" size="30"/>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="caption">Enter the path on the server in which to place the folder contents.</td>
+						</tr>
+					</table></center>
+				</div>
+				
+				<div id="page_editSync" class="page" style="display:none">
+					<center><table style="margin:10px;">
+						<tr>
+							<!-- <td class="label">Two-Way Sync:</td> -->
+							<td colspan="2">
+								<label class="checkbox"><input type="checkbox" id="adv_downsync"/><span>Two-Way Sync</span></label>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td>&nbsp;</td> -->
+							<td colspan="2" class="caption">Synchronize files in both directions, from your Mac up to the server, and from the server down to your Mac. <strong>Use with extreme caution.</strong></td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						<tr>
+							<!-- <td class="label">Auto-Delete:</td> -->
+							<td colspan="2">
+								<label class="checkbox"><input type="checkbox" id="adv_delete"/><span>Auto-Delete Files</span></label>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td>&nbsp;</td> -->
+							<td colspan="2" class="caption">Automatically delete files on the server if you delete them from your Mac.  Use with caution, especially when combined with two-way sync.</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						<!-- <tr>
+							<td colspan="2">
+								<label class="checkbox"><input type="checkbox" id="adv_compress"/><span>Use Compression</span></label>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="caption">Use compression when transferring files, which will reduce bandwidth but take more CPU.</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr> -->
+						<tr>
+							<!-- <td class="label">Backup:</td> -->
+							<td colspan="2">
+								<label class="checkbox"><input type="checkbox" id="adv_backup"/><span>Backup Mode</span></label>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td>&nbsp;</td> -->
+							<td colspan="2" class="caption">Create date/time stampped, archival backups of updated files on the server.</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						<tr>
+							<!-- <td class="label">Backup:</td> -->
+							<td colspan="2">
+								<label class="checkbox"><input type="checkbox" id="adv_startup_sync"/><span>Startup Sync</span></label>
+							</td>
+						</tr>
+						<tr>
+							<!-- <td>&nbsp;</td> -->
+							<td colspan="2" class="caption">Perform a full synchronize check on startup, to make sure all files are up to date.</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						<tr>
+							<td colspan="2">
+								<label class="checkbox"><input type="checkbox" id="adv_users_groups"/><span>Preserve Users and Groups</span></label>
+							</td>
+						</tr>
+						<tr>
+							<td colspan="2" class="caption">This will attempt to preserve users and groups when transferring files (root only).</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer" style="margin-bottom:11px;"></div></td></tr>
+						<tr>
+							<td class="label">Bandwidth Limit:</td>
+							<td>
+								<input type="text" id="adv_rsync_kbrate" size="4" value="" placeholder="0"/> <span style="caption">K/sec</span>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="caption">Optionally limit the bandwidth used to transfer files.  Set to "0" to use all available bandwidth.</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						<tr>
+							<td class="label">Symlink Behavior:</td>
+							<td>
+								<select id="adv_rsync_symlinks">
+									<option value="preserve">Preserve</option>
+									<option value="ignore">Ignore</option>
+								</select>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="caption">Choose whether to preserve symbolic links (recreate them on the server), or ignore them completely.</td>
+						</tr>
+					</table></center>
+				</div>
+				
+				<div id="page_editExtras" class="page" style="display:none">
+					<center><table style="margin:10px;">
+						<tr>
+							<td class="label"><div style="position:relative; top:-1px;">Notifications:</div></td>
+							<td>
+								<table cellspacing="0" cellpadding="0"><tr>
+									<td width="200"><label class="checkbox"><input type="checkbox" id="adv_growl" onChange="$P().setGrowlEnabled(this.checked)"/><span>Growl Enabled</span></label></td>
+									<td width="200"><label class="checkbox"><input type="checkbox" id="adv_sound" onChange="$P().setSoundEnabled(this.checked)"/><span>Sound Enabled</span></label></td>
+								</tr></table>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>
+								<table cellspacing="0" cellpadding="0"><tr>
+									<td width="200">
+										<div id="d_growl_subopts" style="position:relative; top:-2px; margin-left:20px;">
+											<div><label class="checkbox small"><input type="checkbox" id="adv_growl_sync_start"/><span>Growl on Sync Start</span></label></div>
+											<div><label class="checkbox small"><input type="checkbox" id="adv_growl_sync_end"/><span>Growl on Sync Complete</span></label></div>
+											<div><label class="checkbox small"><input type="checkbox" id="adv_growl_error"/><span>Growl on Error</span></label></div>
+										</div>
+									</td>
+									<td width="200">
+										<div id="d_sound_subopts" style="position:relative; top:-2px; margin-left:20px;">
+											<div><label class="checkbox small"><input type="checkbox" id="adv_sound_sync_start"/><span>Play on Sync Start</span></label></div>
+											<div><label class="checkbox small"><input type="checkbox" id="adv_sound_sync_end"/><span>Play on Sync Complete</span></label></div>
+											<div><label class="checkbox small"><input type="checkbox" id="adv_sound_error"/><span>Play on Error</span></label></div>
+										</div>
+									</td>
+								</tr></table>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="caption"><a href="http://growl.info" target="_blank">Growl</a> is a 3rd party extension which displays desktop notifications.</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						
+						<tr>
+							<td class="label"><div style="position:relative; top:-1px;">Clipboard:</div></td>
+							<td>
+								<label class="checkbox"><input type="checkbox" id="adv_clipboard" onChange="$P().setClipboardEnabled(this.checked)"/><span>Copy URLs to Clipboard</span></label>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>
+								<input type="text" id="adv_clip_url" size="40" value="" placeholder="http://yourserver.com/base/dir/"/>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="caption">This will copy a URL to the clipboard for every uploaded file.</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						
+						<tr>
+							<td class="label">File Filters:</td>
+							<td>
+								<div>
+									<select id="adv_filter_switch" onChange="$P().setFilterType(this.options[this.selectedIndex].value)">
+										<option value="exclude">Exclude Files</option>
+										<option value="include">Include Files</option>
+									</select>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td>
+								<div class="filter_exclude">
+									<textarea id="ta_filter_exclude" style="width:100%; height:62px; font-family:monaco,monospace; font-size:9px;" spelling="no" spellcheck="no"></textarea>
+								</div>
+								<div class="filter_include" style="display:none">
+									<textarea id="ta_filter_include" style="width:100%; height:62px; font-family:monaco,monospace; font-size:9px;" spelling="no" spellcheck="no"></textarea>
+								</div>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="caption">
+								<div class="filter_exclude">Enter a list of filename or file path patterns to exclude from sync.</div>
+								<div class="filter_include" style="display:none">Only matching filenames or file path patterns will be included with sync.</div>
+							</td>
+						</tr>
+						<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+						<tr>
+							<td class="label" valign="top">SSH Options:</td>
+							<td>
+								<textarea id="ta_ssh_options" style="width:100%; height:62px; font-family:monaco,monospace; font-size:9px;" spelling="no" spellcheck="no"></textarea>
+							</td>
+						</tr>
+						<tr>
+							<td>&nbsp;</td>
+							<td class="caption">These options control the behavior of SSH when transerring files.</td>
+						</tr>						
+					</table></center>
+				</div>
+				
+			</fieldset>
+			<div style="margin-top:15px;">
+				<center>
+					<button id="btn_edit_save" onClick="OpenBox.editSave()">...</button>
+				</center>
+			</div>
+		</div>
+	</body>
+</html>

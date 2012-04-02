@@ -1,0 +1,498 @@
+html {
+	background:transparent; color:#000;
+	overflow:hidden;
+	margin:0;
+	padding:0;
+	font-family:'lucida grande';
+	font-size:13px;
+}
+body {
+	margin:20px;
+	padding:0;
+}
+h1,h2,h3,h4,h5,h6 {
+	font-family: helvetica;
+}
+.small {
+	font-size:11px;
+}
+.mini {
+	font-size:9px;
+}
+hr {
+	height:1px;
+	background-color:#777;
+	border:none;
+}
+button {
+	font-size:13px;
+	padding-left:1em;
+	padding-right:1em;
+	-webkit-user-select: none;
+}
+textarea {
+	-webkit-appearance:textfield;
+}
+input {
+	font-family:'lucida grande';
+	font-size:13px;
+}
+select {
+	font-family:'lucida grande';
+	font-size:16px;
+}
+input:focus {
+	outline: none;
+}
+input[type='checkbox'] {
+	width: 16px;
+	height: 16px;
+	margin-right: 3px;
+}
+label.checkbox {
+	-webkit-user-select: none;
+}
+label.checkbox > span {
+	-webkit-user-select: none;
+	position: relative;
+	top: -2px;
+}
+
+label.checkbox.small > input[type='checkbox'] {
+	width: 12px;
+	height: 12px;
+	margin-right: 2px;
+}
+label.checkbox.small > span {
+	font-size: 11px;
+	-webkit-user-select: none;
+	position: relative;
+	top: 1px;
+}
+
+fieldset {
+	border: 1px solid rgba(200, 200, 200, 1);
+	border-radius: 8px;
+	background: #e8e8e8;
+	-webkit-box-shadow: inset 1px 1px 1px rgba(0,0,0,0.1);
+	box-shadow: inset 1px 1px 1px rgba(0,0,0,0.1);
+	padding: 15px 20px 20px 20px;
+}
+fieldset > legend {
+	text-align: center;
+}
+fieldset > legend > span {
+	-webkit-user-select: none;
+	cursor: default;
+	height: 19px;
+	line-height: 19px;
+	background: #eee;
+	background: -webkit-gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0, rgba(255, 255, 255, 1)),
+	    color-stop(0.4, rgba(249, 249, 249, 1)),
+	    color-stop(0.5, rgba(242, 242, 242, 1)),
+		color-stop(0.51, rgba(233, 233, 233, 1)),
+	    color-stop(0.7, rgba(231, 231, 231, 1)),
+	    color-stop(0.8, rgba(232, 232, 232, 1)),
+	    color-stop(0.9, rgba(233, 233, 233, 1)),
+		color-stop(1.0, rgba(238, 238, 238, 1))
+	);
+	background: gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0, rgba(255, 255, 255, 1)),
+	    color-stop(0.4, rgba(249, 249, 249, 1)),
+	    color-stop(0.5, rgba(242, 242, 242, 1)),
+		color-stop(0.51, rgba(233, 233, 233, 1)),
+	    color-stop(0.7, rgba(231, 231, 231, 1)),
+	    color-stop(0.8, rgba(232, 232, 232, 1)),
+	    color-stop(0.9, rgba(233, 233, 233, 1)),
+		color-stop(1.0, rgba(238, 238, 238, 1))
+	);
+	border-top: 1px solid rgba(154, 154, 154, 1);
+	border-bottom: 1px solid rgba(154, 154, 154, 1);
+	border-right: 1px solid rgba(154, 154, 154, 1);
+	padding-left: 15px;
+	padding-right: 15px;
+	padding-top: 1px;
+	padding-bottom: 2px;
+}
+fieldset > legend > span:first-child {
+	border-left: 1px solid rgba(154, 154, 154, 1);
+	border-top-left-radius: 5px;
+	border-bottom-left-radius: 5px;
+	-webkit-border-top-left-radius: 5px;
+	-webkit-border-bottom-left-radius: 5px;
+}
+fieldset > legend > span:last-child {
+	border-right: 1px solid rgba(154, 154, 154, 1);
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	-webkit-border-top-right-radius: 5px;
+	-webkit-border-bottom-right-radius: 5px;
+}
+fieldset > legend > span:active {
+	background: -webkit-gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0, rgba(229, 229, 229, 1)),
+	    color-stop(0.4, rgba(224, 224, 224, 1)),
+	    color-stop(0.5, rgba(217, 217, 217, 1)),
+		color-stop(0.51, rgba(209, 209, 209, 1)),
+	    color-stop(0.7, rgba(207, 207, 207, 1)),
+	    color-stop(0.8, rgba(208, 208, 208, 1)),
+	    color-stop(0.9, rgba(209, 209, 209, 1)),
+		color-stop(1.0, rgba(214, 214, 214, 1))
+	);
+	background: gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0, rgba(229, 229, 229, 1)),
+	    color-stop(0.4, rgba(224, 224, 224, 1)),
+	    color-stop(0.5, rgba(217, 217, 217, 1)),
+		color-stop(0.51, rgba(209, 209, 209, 1)),
+	    color-stop(0.7, rgba(207, 207, 207, 1)),
+	    color-stop(0.8, rgba(208, 208, 208, 1)),
+	    color-stop(0.9, rgba(209, 209, 209, 1)),
+		color-stop(1.0, rgba(214, 214, 214, 1))
+	);
+}
+fieldset > legend > span.selected {
+	color: #fff;
+	text-shadow: 0px 1px 0px rgba(0, 0, 0, 0.4);
+	-webkit-box-shadow: inset 1px 1px 1px rgba(0,0,0,0.3);
+	border-top: 1px solid rgba(120, 120, 120, 1);
+	/* border-left: 1px solid rgba(120, 120, 120, 1); */
+	background: -webkit-gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0, rgba(143, 143, 143, 1)),
+	    color-stop(0.5, rgba(148, 148, 148, 1)),
+	    color-stop(0.75, rgba(150, 150, 150, 1)),
+	    color-stop(0.89, rgba(156, 156, 156, 1)),
+	    color-stop(0.90, rgba(162, 162, 162, 1)),
+		color-stop(1.0, rgba(164, 164, 164, 1))
+	);
+	background: gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0, rgba(143, 143, 143, 1)),
+	    color-stop(0.5, rgba(148, 148, 148, 1)),
+	    color-stop(0.75, rgba(150, 150, 150, 1)),
+	    color-stop(0.89, rgba(156, 156, 156, 1)),
+	    color-stop(0.90, rgba(162, 162, 162, 1)),
+		color-stop(1.0, rgba(164, 164, 164, 1))
+	);
+}
+
+table {
+  border-collapse: collapse;
+}
+
+/* Data Table */
+
+.dt_wrapper {
+	margin-top: 10px;
+	margin-bottom: 0px;
+	border: 1px solid rgba(200, 200, 200, 1);
+	background: #fff;
+	overflow-y: auto;
+	-webkit-user-select: none;
+}
+
+.data_table {
+	width: 100%;
+	-webkit-user-select: none;
+}
+.data_table tr th {
+	font-family:'lucida grande';
+	font-size:11px;
+	height: 15px;
+	line-height: 15px;
+	cursor:default; 
+	text-align:left;
+	padding-right:10px;
+	padding-left:4px;
+	/* color:#1840F0; */
+	color: #000;
+	font-weight: normal;
+	
+	background: #eee;
+	background: -webkit-gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0, rgba(255, 255, 255, 1)),
+	    color-stop(0.4, rgba(249, 249, 249, 1)),
+	    color-stop(0.5, rgba(242, 242, 242, 1)),
+		color-stop(0.51, rgba(233, 233, 233, 1)),
+	    color-stop(0.7, rgba(231, 231, 231, 1)),
+	    color-stop(0.8, rgba(232, 232, 232, 1)),
+	    color-stop(0.9, rgba(233, 233, 233, 1)),
+		color-stop(1.0, rgba(238, 238, 238, 1))
+	);
+	background: gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0, rgba(255, 255, 255, 1)),
+	    color-stop(0.4, rgba(249, 249, 249, 1)),
+	    color-stop(0.5, rgba(242, 242, 242, 1)),
+		color-stop(0.51, rgba(233, 233, 233, 1)),
+	    color-stop(0.7, rgba(231, 231, 231, 1)),
+	    color-stop(0.8, rgba(232, 232, 232, 1)),
+	    color-stop(0.9, rgba(233, 233, 233, 1)),
+		color-stop(1.0, rgba(238, 238, 238, 1))
+	);
+}
+.data_table tr td {
+	font-family:'lucida grande';
+	font-size:13px;
+	padding-right:10px;
+	padding-left:4px;
+	background: #fff;
+	cursor:default; 
+	white-space: nowrap;
+	overflow:hidden; text-overflow:ellipsis;
+	height: 20px;
+}
+.data_table tr td input[type='checkbox'] {
+	width: 12px;
+	height: 12px;
+	margin-right: 0px;
+}
+.data_table tr.selected td {
+	background-color:#3875d7;
+	color: #fff;
+}
+
+/* Buttons Under Data Table */
+
+div.icon_shelf {
+	height: 18px;
+	margin-bottom: 15px;
+	
+	border-left: 1px solid rgba(200, 200, 200, 1);
+	border-right: 1px solid rgba(200, 200, 200, 1);
+	border-bottom: 1px solid rgba(200, 200, 200, 1);
+	
+	background: #eee;
+	background: -webkit-gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0, rgba(255, 255, 255, 1)),
+	    color-stop(0.4, rgba(249, 249, 249, 1)),
+	    color-stop(0.5, rgba(242, 242, 242, 1)),
+		color-stop(0.51, rgba(233, 233, 233, 1)),
+	    color-stop(0.7, rgba(231, 231, 231, 1)),
+	    color-stop(0.8, rgba(232, 232, 232, 1)),
+	    color-stop(0.9, rgba(233, 233, 233, 1)),
+		color-stop(1.0, rgba(238, 238, 238, 1))
+	);
+	background: gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0, rgba(255, 255, 255, 1)),
+	    color-stop(0.4, rgba(249, 249, 249, 1)),
+	    color-stop(0.5, rgba(242, 242, 242, 1)),
+		color-stop(0.51, rgba(233, 233, 233, 1)),
+	    color-stop(0.7, rgba(231, 231, 231, 1)),
+	    color-stop(0.8, rgba(232, 232, 232, 1)),
+	    color-stop(0.9, rgba(233, 233, 233, 1)),
+		color-stop(1.0, rgba(238, 238, 238, 1))
+	);
+}
+
+div.icon_shelf > div.icon {
+	float: left;
+	padding-left: 7px;
+	padding-right: 7px;
+	line-height: 18px;
+	background: transparent;
+	border-right: 1px solid rgba(200, 200, 200, 1);
+	font-size: 15px;
+	font-family: helvetica;
+	cursor: default;
+	-webkit-user-select: none;
+}
+div.icon_shelf > div.icon:active {
+	background: rgba(0, 0, 0, 0.3);
+}
+
+/* Dialog */
+
+#dialog_overlay {
+	position: fixed;
+	z-index:999;
+	top: 0px;
+	left: 0px;
+	background-color:transparent;
+	height:100%;
+	width:100%;
+}
+
+#dialog_container {
+	position: fixed;
+	z-index:1000;
+}
+
+#dialog_main {
+	border: 1px solid #ccc;
+	padding: 10px;
+	background: #f4f4f4;
+	text-align: left;
+	
+	box-shadow: rgba(0,0,0,0.5) 10px 10px 32px;
+	-webkit-box-shadow: rgba(0,0,0,0.5) 10px 10px 32px;
+}
+
+/* Progress Bar */
+
+.progress_container {
+	position: relative;
+	overflow: hidden;
+	height: 16px;
+	border: 1px solid #989898;
+	border-radius: 2px;
+	
+	background: #dcdcdc;
+	background: -webkit-gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0, rgba(0, 0, 0, 0.135)),
+	    color-stop(0.2, rgba(0, 0, 0, 0.060)),
+	    color-stop(0.5, rgba(0, 0, 0, 0.037)),
+	    color-stop(0.9, rgba(0, 0, 0, 0.013)),
+		color-stop(1.0, rgba(0, 0, 0, 0.041))
+	);
+	background: gradient(
+	    linear,
+	    left top,
+	    left bottom,
+	    color-stop(0, rgba(0, 0, 0, 0.135)),
+	    color-stop(0.2, rgba(0, 0, 0, 0.060)),
+	    color-stop(0.5, rgba(0, 0, 0, 0.037)),
+	    color-stop(0.9, rgba(0, 0, 0, 0.013)),
+		color-stop(1.0, rgba(0, 0, 0, 0.041))
+	);
+}
+
+.progress_container > .progress_bar {
+	position: absolute;
+	height: 16px;
+	
+	box-shadow: rgba(0,0,0,0.3) 1px 0px 0px;
+	-webkit-box-shadow: rgba(0,0,0,0.3) 1px 0px 0px;
+	
+	background-repeat: repeat-x;
+}
+.progress_container > .progress_bar.normal {
+	background-image: url(images/Aqua-Progress-Bar.png);
+	
+	-webkit-animation-name: prog_bar_pat;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: linear;
+	-webkit-animation-duration: 2s;
+}
+@-webkit-keyframes prog_bar_pat {
+	from { background-position: 0px 0px; }
+	to { background-position: -32px 0px; }
+}
+.progress_container > .progress_bar.indeterminate {
+	background-image: url(images/Aqua-Progress-Bar-Indeterminate.png);
+	
+	-webkit-animation-name: prog_bar_pat2;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: linear;
+	-webkit-animation-duration: 6s;
+}
+@-webkit-keyframes prog_bar_pat2 {
+	from { background-position: 0px 0px; }
+	to { background-position: -96px 0px; }
+}
+
+/* Status Page */
+
+div.section_header {
+	margin-top: 10px;
+	margin-bottom: 4px;
+	font-size: 11px;
+	font-weight: bold;
+	text-transform: uppercase;
+	color: #888;
+	text-shadow: 0px 1px 0px #fff;
+	cursor: default;
+}
+
+div.project_status_container {
+	position: relative;
+	border: 1px solid rgba(200, 200, 200, 1);
+	border-radius: 3px;
+	background: rgba(0,0,0,0.04);
+	-webkit-box-shadow: inset 1px 1px 1px rgba(0,0,0,0.1);
+	box-shadow: inset 1px 1px 1px rgba(0,0,0,0.1);
+	/* padding: 10px; */
+	overflow-y: scroll;
+}
+
+div.status_item {
+	border-top: 1px solid rgba(0,0,0,0.25);
+	border-bottom: 1px solid rgba(255, 255, 255, 1);
+	padding-top: 5px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	cursor: default;
+}
+div.stitem_header {
+	font-size:13px;
+	font-weight: bold;
+	/* text-shadow: 0px 1px 0px #fff; */
+}
+div.stitem_header.idle {
+	color: #888;
+}
+div.stitem_header.active {
+	color: blue;
+}
+div.stitem_header.error {
+	color: red;
+}
+div.stitem_details {
+	padding-top: 6px;
+	padding-bottom: 6px;
+	padding-left: 8px;
+}
+div.stitem_details > div.sitem_title {
+	font-size:13px;
+	/* text-shadow: 0px 1px 0px #fff; */
+}
+div.stitem_details.error > div.sitem_title {
+	color: red;
+	font-weight: bold;
+}
+div.stitem_details > div.sitem_content {
+	font-size:11px;
+	margin-top: 2px;
+}
+div.stitem_date {
+	font-size:11px; color:#888; font-style:italic;
+}
+
+div.project_status_totals {
+	border: 1px solid rgba(200, 200, 200, 1);
+	border-radius: 3px;
+	padding: 10px;
+	cursor: default;
+}

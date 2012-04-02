@@ -1,0 +1,238 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>OpenBox Control Panel</title>
+		
+		<link rel="stylesheet" href="style.css">
+		
+		<script src="jquery.js" type="text/javascript" charset="utf-8"></script>
+		<script src="tools.js" type="text/javascript"></script>
+		<script src="app.js" type="text/javascript"></script>
+		<script src="server.js" type="text/javascript"></script>
+		
+		<script type="text/javascript" charset="utf-8">
+			$(document).ready(function() {
+				OpenBox.init();
+				
+				// select tab based on projects
+				if (prefs.projects && prefs.projects.length) OpenBox.clickTab('status');
+				else OpenBox.clickTab('easy');
+			});
+			
+			var joe = null;
+			
+			function joetest() {
+				joe = App.createWindow('test.html');
+				joe.makeKeyAndOrderFront();
+				
+				setTimeout( function() {
+					joe.document.joe2( OpenBox );
+				}, 1000 );
+			}
+			
+			OpenBox.joetest2 = function(text) {
+				$('#tab_advanced').html( text );
+				joe.close();
+			}
+			
+			function api_test() {
+				/* OpenBox.apiPost('shell', { command: "date" }, function(resp) {
+					$('#page_status').html( JSON.stringify(resp) );
+					OpenBox.clickTab('status');
+				} );
+				return; */
+				
+				var applscpt = [
+					'tell application "OpenBox"',
+					'activate',
+					'set question to display dialog "Would you like a kitten?" buttons {"Yes please!", "No way!"} default button 2',
+					'set answer to button returned of question',
+					'end tell'
+				].join("\n");
+				
+				OpenBox.apiPost('applescript', { code: applscpt }, function(resp) {
+					$('#page_status').html( JSON.stringify(resp) );
+					OpenBox.clickTab('status');
+				} );
+			}
+		</script>
+	</head>
+	<body>
+		<fieldset>
+			<legend>
+				<span id="tab_easy" class="tab">Easy Setup</span><span id="tab_status" class="tab">Status</span><span id="tab_advanced" class="tab">Advanced</span>
+			</legend>
+			<div id="page_easy" class="page" style="display:none">
+				<div class="caption" style="color:#000;">With OpenBox, you can keep a local folder on your Mac automatically and continually synchronized with a remote server (Mac or Unix / Linux).  See <a href="http://openbox.io/" target="_blank">OpenBox.io</a> for more information.</div>
+				<hr style="margin:15px 0px 20px 0px;"/>
+				
+				<center><table style="margin:10px;">
+					<tr>
+						<td class="label">Local&nbsp;Folder:</td>
+						<td>
+							<table cellspacing="0" cellpadding="0"><tr>
+								<td><div class="folder" id="es_local_base_dir"></div></td>
+								<td>&nbsp;&nbsp;</td>
+								<td><button class="small" onClick="$P().selectLocalBaseDir()">Choose...</button></td>
+							</tr></table>
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td class="caption">Choose a local folder on your Mac to keep synchronized with your server.  All nested folders and files will be synchronized too!</td>
+					</tr>
+					<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+					<tr>
+						<td class="label">Hostname:</td>
+						<td>
+							<input type="text" id="es_remote_hostname" size="30" placeholder="my.server.com"/>
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td class="caption">Enter the hostname or IP address of the destination server.</td>
+					</tr>
+					<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+					<tr>
+						<td class="label">Username:</td>
+						<td>
+							<input type="text" id="es_rsync_username" size="20"/>
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td class="caption">Enter the username of your SSH / SFTP account on the server.</td>
+					</tr>
+					<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+					<tr>
+						<td class="label">
+							<select id="es_auth_type" onChange="$P().setAuthType(this.options[this.selectedIndex].value)">
+								<option value="pass">Password</option>
+								<option value="key">SSH Key</option>
+							</select>
+						</td>
+						<td>
+							<div class="auth_pass">
+								<input type="password" id="es_rsync_password" size="20"/>
+							</div>
+							<div class="auth_key" style="display:none">
+								<table cellspacing="0" cellpadding="0"><tr>
+									<td><div class="file_key" id="es_rsync_ssh_key_file">(Automatic)</div></td>
+									<td>&nbsp;&nbsp;</td>
+									<td><button class="small" onClick="$P().selectSSHKeyFile()">Choose...</button></td>
+								</tr></table>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td class="caption">
+							<div class="auth_pass">Enter the password you use to login to the server.</div>
+							<div class="auth_key" style="display:none;">
+								<div>Select the SSH private key to authenticate your account on the server.</div>
+								<div style="height:4px;"></div>
+							</div>
+						</td>
+					</tr>
+					<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+					<tr>
+						<td class="label">Remote&nbsp;Path:</td>
+						<td>
+							<input type="text" id="es_remote_base_dir" size="30"/>
+						</td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td class="caption">Enter the path on the server in which to place the folder contents.</td>
+					</tr>
+					<tr><td colspan="2"><div class="table_spacer"></div></td></tr>
+				</table><button onClick="$P().saveSettings()">Save Settings</button></center>
+			</div>
+			<div id="page_status" class="page" style="display:none">
+				<div class="right" style="margin-left:15px;"><label class="checkbox"><input type="checkbox" class="cb_ob_enabled"/><span>OpenBox Enabled</span></label></div>
+				<div class="right"><label class="checkbox"><input type="checkbox" class="cb_ob_start_on_login"/><span>Start on Login</span></label></div>
+				<div class="clear"></div>
+				
+				<div class="section_header">Active Boxes:</div>
+				<div class="project_status_container" id="st_proj_stat_cont" style="height:230px;"></div>
+				
+				<div class="section_header">Statistics:</div>
+				<div class="project_status_totals" id="st_proj_stat_tota">
+					<button class="small right" onClick="$P().resetStats()">Reset Stats</button>
+					<center><table style="font-size:12px;">
+						<tr><td align="right">Total files sent:&nbsp;</td><td align="left" id="st_stat_tfs"></td></tr>
+						<tr><td align="right">Total files received:&nbsp;</td><td align="left" id="st_stat_tfr"></td></tr>
+						<!-- <tr><td colspan="2"><div style="height:5px;"></div></td></tr> -->
+						<tr><td align="right">Total data sent:&nbsp;</td><td align="left" id="st_stat_tbs"></td></tr>
+						<tr><td align="right">Total data received:&nbsp;</td><td align="left" id="st_stat_tbr"></td></tr>
+					</table></center>
+					<div class="clear"></div>
+				</div>
+			</div>
+			<div id="page_advanced" class="page" style="display:none">
+				<div class="right" style="margin-left:15px;"><label class="checkbox"><input type="checkbox" class="cb_ob_enabled"/><span>OpenBox Enabled</span></label></div>
+				<!-- <div class="right" style="margin-left:20px;"><label class="checkbox"><input type="checkbox"/><span>Notifications Enabled</span></label></div> -->
+				<div class="right"><label class="checkbox"><input type="checkbox" class="cb_ob_start_on_login"/><span>Start on Login</span></label></div>
+				<div class="clear"></div>
+				
+				<div class="dt_wrapper" id="adv_table_wrapper" style="height:305px;">
+				</div>
+				<div class="icon_shelf">
+					<div class="icon" title="Add Box..." onClick="$P().addProject()">+</div>
+					<div class="icon" id="adv_delete_box" title="Delete Box" onClick="$P().deleteSelectedProject()">&ndash;</div>
+					<div class="icon" id="adv_sync_box" title="Sync Box" onClick="$P().syncSelectedProject()"><div id="refresh_thingy">&#x21BA;</div></div>
+					<div class="icon" id="adv_edit_box" title="Edit Box..." style="font-family:'lucida grande'; font-size:10px;" onClick="$P().editSelectedProject()">Edit...</div>
+					<div class="clear"></div>
+				</div>
+				
+				<div style="">
+					<button class="left" onClick="$P().importSettings()">Import Settings...</button>
+					<button class="left" style="margin-left:15px;" onClick="$P().exportSettings()">Export Settings...</button>
+					<button class="right" onClick="$P().viewLogFile()">View Log File...</button>
+					<div class="clear"></div>
+				</div>
+			</div>
+		</fieldset>
+	</body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
