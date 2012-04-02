@@ -19,7 +19,7 @@ OpenBox would not be possible without the following awesome tools / libraries:
 * [CocoaDialog](https://github.com/mstratman/cocoadialog)
 	* This tool provides command-line access to Mac OS X native dialogs and more.
 * [Mac::FSEvents](http://search.cpan.org/perldoc?Mac::FSEvents)
-	* This is a Perl module which provides access to the Mac OS X FSEvents API, for instant notification for changed files.
+	* This is a Perl module which provides access to the Mac OS X FSEvents API, for instant notification of changed files.
 * [IO::Pty::Easy](http://search.cpan.org/perldoc?IO::Pty::Easy)
 	* This module allows a script to drive command-line tools such as Rsync and SSH, even providing passwords when prompted.
 * [JSON::PP](http://search.cpan.org/perldoc?JSON::PP)
@@ -38,6 +38,8 @@ And my thanks to the following artists / designers for use of their work:
 	* For their [Whitespace Icon Collection](http://www.pixelpressicons.com/?page_id=118), used on the OpenBox.io website.
 * [Apple Inc.](http://apple.com)
 	* For their awesome background linen pattern.
+* [Shockwave-Sound.com](http://www.shockwave-sound.com)
+	* For their awesome stock sound effects (3 of which are used in OpenBox)
 
 # Legal
 
