@@ -1068,6 +1068,7 @@ sub rsync {
 	my $last_progress_update = time();
 	my $time_start = time();
 	my $last_ch_seen = time();
+	my $last_line_100pct = 0;
 	
 	# local $/ = "\r";
 	delete $ENV{'SSH_AUTH_SOCK'};
@@ -1097,6 +1098,7 @@ sub rsync {
 			foreach my $line (split(/\n/, $buffer)) {
 				chomp $line; $line =~ s/^\s+//; $line =~ s/\s+$//;
 				if ($rsync_log_fh) { $rsync_log_fh->print("$line\n"); }
+				$last_line_100pct = 0;
 		
 				# SENT:<f+++++++ /gamerebirth/work/datadrain/data_drain_2.psd
 				if ($line =~ /^SENT\:(\S+)\s+(.+)$/) {
@@ -1145,6 +1147,8 @@ sub rsync {
 			
 					$num_complete++;
 					$partial_pct = 0;
+					
+					$last_line_100pct = 1;
 				}
 		
 				# 2228224  78%    1.44MB/s    0:00:00
@@ -1195,7 +1199,10 @@ sub rsync {
 			$pty->close();
 			return 0;
 		}
-		if ((time() - $last_ch_seen) >= $self->{config}->{IdleTimeout}) {
+		
+		my $timeout_secs = $self->{config}->{IdleTimeout};
+		if ($last_line_100pct) { $timeout_secs *= 10; } # rsync likes to hang at 100%, so give it LOTS of extra time
+		if ((time() - $last_ch_seen) >= $timeout_secs) {
 			$self->log_debug(3, "Idle timeout, aborting rsync in progress.");
 			my $nice_date_time = scalar localtime;
 			if ($rsync_log_fh) { $rsync_log_fh->print("\n\nTIMEOUT ERROR at $nice_date_time -- ABORTING OPERATION IN PROGRESS!\n\n"); }
