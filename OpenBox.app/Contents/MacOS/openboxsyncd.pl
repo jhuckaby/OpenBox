@@ -872,11 +872,11 @@ sub get_rsync_cmd {
 		$cmd .= ' --owner --group';
 	}
 	
-	if ($project->{exclude_temp_file}) {
-		$cmd .= ' --exclude-from=' . $project->{exclude_temp_file};
-	}
 	if ($project->{include_temp_file}) {
 		$cmd .= ' --include-from=' . $project->{include_temp_file};
+	}
+	if ($project->{exclude_temp_file}) {
+		$cmd .= ' --exclude-from=' . $project->{exclude_temp_file};
 	}
 	
 	# extras
