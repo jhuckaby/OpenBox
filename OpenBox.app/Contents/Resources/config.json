@@ -19,7 +19,7 @@
 	"ProgressUpdateInterval": 0.5,
 	"UpsyncRetryInterval": 30,
 	"AutoDownsyncInterval": 60,
-	"IdleTimeout": 30,
+	"IdleTimeout": 300,
 	"BaseRsyncCommand": "/usr/bin/rsync -rptDv",
 	"BaseSSHCommand": "/usr/bin/ssh",
 	"BaseSoundCommand": "/usr/bin/afplay",

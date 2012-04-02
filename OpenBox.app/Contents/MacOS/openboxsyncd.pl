@@ -1199,7 +1199,7 @@ sub rsync {
 			$self->log_debug(3, "Idle timeout, aborting rsync in progress.");
 			my $nice_date_time = scalar localtime;
 			if ($rsync_log_fh) { $rsync_log_fh->print("\n\nTIMEOUT ERROR at $nice_date_time -- ABORTING OPERATION IN PROGRESS!\n\n"); }
-			$self->update_project_status( $project, { code => 0, description => "Sync aborted due to timeout error." });
+			$self->update_project_status( $project, { code => 1, description => "Sync aborted due to timeout error." });
 			$pty->close();
 			return 0;
 		}
