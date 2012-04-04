@@ -542,7 +542,8 @@ var OpenBox = {
 									
 									// project may have partial stats (rsync in progress)
 									// if so, add them to totals (which are only updated after rsync completes)
-									if (pstatus.stats) {
+									// JH 2012-04-03: Disabling this for now, because rsync gives us CRAP stats while in progress
+									/* if (pstatus.stats) {
 										for (var key in pstatus.stats) {
 											if (!status[key]) status[key] = 0;
 											status[key] += pstatus.stats[key];
@@ -551,7 +552,7 @@ var OpenBox = {
 										if (!status.bytes_sent) status.bytes_sent = 0;
 										if (pstatus.stats.partial_received) status.bytes_received += pstatus.stats.partial_received;
 										if (pstatus.stats.partial_sent) status.bytes_sent += pstatus.stats.partial_sent;
-									}
+									} */
 									
 									// render html for project status
 									var pstate = 'Idle';
@@ -657,7 +658,7 @@ var OpenBox = {
 						
 						html += '<td style="max-width:100px;">'+(project.title || '(Easy Setup)')+'</td>';
 						
-						html += '<td><div class="folder" style="max-width:100px;">'+basename(project.local_base_dir)+'</div></td>';
+						html += '<td><div class="folder" style="max-width:100px;" title="'+project.local_base_dir+'">'+basename(project.local_base_dir)+'</div></td>';
 						
 						html += '<td style="max-width:200px;">'+project.remote_hostname+':'+project.remote_base_dir+'/</td>';
 						
