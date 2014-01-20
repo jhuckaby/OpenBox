@@ -465,12 +465,12 @@ sub watch_project {
 		if ($prefs->{auto_downsync} && !$project->{last_upsync_retry} && 
 			(($now - $project->{last_auto_downsync}) >= ($prefs->{auto_downsync_interval} || $self->{config}->{AutoDownsyncInterval}))) {
 			
-			$self->log_debug(4, "Performing auto downsync");
-			my $num_sent = $self->rsync( $project, $prefs->{local_base_dir}, 0, 'downsync' );
-			if ($num_sent) {
-				$project->{files} = $self->scan_dir( $project, $prefs->{local_base_dir} );
-			}
-			$self->log_debug(4, "Auto downsync complete, returning to event loop");
+			# $self->log_debug(4, "Performing auto downsync");
+			# my $num_sent = $self->rsync( $project, $prefs->{local_base_dir}, 0, 'downsync' );
+			# if ($num_sent) {
+			# 	$project->{files} = $self->scan_dir( $project, $prefs->{local_base_dir} );
+			# }
+			# $self->log_debug(4, "Auto downsync complete, returning to event loop");
 			$project->{last_auto_downsync} = time();
 		} # time for downsync fun!
 		
@@ -940,7 +940,7 @@ sub rsync_dry_count {
 		$buffer =~ s/\r\n/\n/sg;
 		$buffer =~ s/\r/\n/sg;
 		
-		if ($prefs->{rsync_password} && !$sent_pass && ($buffer =~ /\bpassword\:/)) {
+		if ($prefs->{rsync_password} && !$sent_pass && ($buffer =~ /\bpassword\:/i)) {
 			$self->log_debug(9, "We were prompted for a password, sending it now.");
 			$pty->write( $prefs->{rsync_password} . "\n", 0 );
 			$sent_pass = 1;
@@ -1082,7 +1082,7 @@ sub rsync {
 		$buffer =~ s/\r\n/\n/sg;
 		$buffer =~ s/\r/\n/sg;
 		
-		if ($prefs->{rsync_password} && !$sent_pass && ($buffer =~ /\bpassword\:/)) {
+		if ($prefs->{rsync_password} && !$sent_pass && ($buffer =~ /\bpassword\:/i)) {
 			$self->log_debug(9, "We were prompted for a password, sending it now.");
 			$pty->write( $prefs->{rsync_password} . "\n", 0 );
 			$sent_pass = 1;

@@ -1,6 +1,6 @@
 # Overview
 
-OpenBox is a Mac OS X application which can synchronize folders to local or remote servers, and keep them synchronized automatically and continuously in the background.  If you make changes to any file or folder, those changes are instantly detected and propagated to the server.  You can setup multiple boxes pointing to different servers, and even enable two-way sync, so changes on the server are propagated back down to your Mac!
+OpenBox is a Mac OS X application which can synchronize folders to local or remote servers, and keep them synchronized automatically and continuously in the background.  If you make changes to any file or folder, those changes are instantly detected and propagated to the server.  You can setup multiple boxes pointing to different servers, automatically copy URLs to your clipboard (if uploading to a web server for example), and receive notifications when sync operations complete.
 
 To download the app itself, visit [OpenBox.io](http://openbox.io/).
 
@@ -45,7 +45,7 @@ And my thanks to the following artists / designers for use of their work:
 
 **OpenBox v1.0**
 
-Copyright (c) 2012 Joseph Huckaby
+Copyright (c) 2012 - 2014 Joseph Huckaby
 
 Source Code released under the MIT License: http://www.opensource.org/licenses/mit-license.php
 

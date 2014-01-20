@@ -450,7 +450,7 @@ sub api_check_ssh_dir {
 		$buffer =~ s/\r\n/\n/sg;
 		$buffer =~ s/\r/\n/sg;
 		
-		if ($prefs->{rsync_password} && !$sent_pass && ($buffer =~ /\bpassword\:/)) {
+		if ($prefs->{rsync_password} && !$sent_pass && ($buffer =~ /\bpassword\:/i)) {
 			$self->log_debug(9, "We were prompted for a password, sending it now.");
 			$pty->write( $prefs->{rsync_password} . "\n", 0 );
 			$sent_pass = 1;
