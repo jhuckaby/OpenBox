@@ -11,6 +11,7 @@ sub kernel_dropped    { shift->{kernel_dropped} }
 sub history_done      { shift->{history_done} }
 sub mount             { shift->{mount} }
 sub unmount           { shift->{unmount} }
+sub root_changed      { shift->{root_changed} }
 
 1;
 __END__
@@ -82,6 +83,11 @@ in the event is the path to the newly-mounted volume.
 
 This flag indicates a special event sent when a volume is unmounted.  The path
 in the event is the path to the directory from which the volume was unmounted.
+
+=item B<root_changed>
+
+This flag indicates that a change occurred along the path you're monitoring.
+See L<https://developer.apple.com/library/mac/#documentation/Darwin/Reference/FSEvents_Ref/FSEvents_h/index.html#//apple_ref/c/econst/kFSEventStreamCreateFlagWatchRoot>.
 
 =back
 

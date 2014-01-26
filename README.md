@@ -1,8 +1,12 @@
 # Overview
 
-OpenBox is a Mac OS X application which can synchronize folders to local or remote servers, and keep them synchronized automatically and continuously in the background.  If you make changes to any file or folder, those changes are instantly detected and propagated to the server.  You can setup multiple boxes pointing to different servers, automatically copy URLs to your clipboard (if uploading to a web server for example), and receive notifications when sync operations complete.
+OpenBox is a Mac OS X application which can synchronize folders to remote servers via [SSH](http://en.wikipedia.org/wiki/Secure_Shell) and [Rsync](http://en.wikipedia.org/wiki/Rsync), and keep them synchronized automatically and continuously in the background, similar to how [Dropbox](http://dropbox.com) behaves.  If you make changes to any file or folder, those changes are instantly detected and propagated to the server.  You can setup multiple boxes pointing to different servers, automatically copy URLs to your clipboard (if uploading to a web server for example), and receive notifications when sync operations complete.
 
-To download the app itself, visit [OpenBox.io](http://openbox.io/).
+To download the app, visit [OpenBox.io](http://openbox.io/).
+
+# Features
+
+
 
 # Languages
 
@@ -47,6 +51,24 @@ And my thanks to the following artists / designers for use of their work:
 
 Copyright (c) 2012 - 2014 Joseph Huckaby
 
-Source Code released under the MIT License: http://www.opensource.org/licenses/mit-license.php
+Source Code released under the MIT License:
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
 
 Please note that OpenBox relies on, and ships with, several 3rd party libraries, which have with their own license agreements.  The MIT License only covers the 1st party OpenBox code, written by Joseph Huckaby.

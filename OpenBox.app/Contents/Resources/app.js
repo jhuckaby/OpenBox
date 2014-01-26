@@ -262,7 +262,7 @@ var OpenBox = {
 					else if (path.match(/\S/)) {
 						path = path.replace(/\/$/, '');
 						$P().project.local_base_dir = path;
-						$('#es_local_base_dir').html( basename(path) ).attr('title', project.local_base_dir);
+						$('#es_local_base_dir').html( basename(path) ).attr('title', path);
 					}
 				} );
 			},

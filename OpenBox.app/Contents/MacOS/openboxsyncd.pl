@@ -27,6 +27,12 @@ use IO::Select;
 use POSIX qw/:sys_wait_h setsid/;
 
 chdir dirname($0);
+
+# OS detect for FSevents shared lib support
+my $sys_pro_raw = `/usr/sbin/system_profiler SPSoftwareDataType`;
+my $os_ver = ($sys_pro_raw =~ /OS X 10.8/) ? '10.8' : '10.9';
+`ln -snf auto-$os_ver auto`;
+
 require 'JSON.pm';
 require 'Daemon.pm';
 require 'utils.pl';
