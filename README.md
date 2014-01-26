@@ -6,7 +6,18 @@ To download the app, visit [OpenBox.io](http://openbox.io/).
 
 # Features
 
-
+* OpenBox is built on standard tools including [SSH](http://en.wikipedia.org/wiki/Secure_Shell) and [Rsync](http://en.wikipedia.org/wiki/Rsync), so it is compatible with most Unix based servers.
+* Use a password or SSH key to connect to your server. All passwords are stored securely in the Mac OS X Keychain.
+* All OpenBox settings can be exported as a plain text file, and imported to OpenBox on another Mac.
+* Specify custom include and/or exclude filename pattern matches. Those horrible .DS_Store files are excluded by default.
+* Optionally show floating desktop notifications for file transfers starting and/or completing, with Growl if available.
+* Got a web server? Easily setup a box to automatically copy URLs to your clipboard the moment files are uploaded.
+* All sync transactions are logged, including the actual rsync commands issued and full verbose output.
+* If your connection drops or server goes down, OpenBox will keep track of all changes and re-sync the next time it can.
+* To protect against accidental replacements, files are only overwritten if their modification dates are newer.
+* To save on bandwidth and increase speed, files are automatically compressed as they travel over the wire.
+* Optionally enable a special backup mode, which creates timestamped backups of files when they are replaced.
+* Optionally limit the bandwidth used by OpenBox when files are sent and received (configurable per folder).
 
 # Languages
 
