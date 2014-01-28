@@ -3,6 +3,26 @@
 # Copyright (c) 2012 Joseph Huckaby
 # Released under the MIT License.
 
+sub os_detect_auto_lib_setup {
+	# OS detect for FSevents shared lib support
+	my $sys_pro_raw = `/usr/sbin/system_profiler SPSoftwareDataType`;
+	my $os_ver = ($sys_pro_raw =~ /OS X 10.8/) ? '10.8' : '10.9';
+	`ln -snf auto-$os_ver auto`;
+	return $os_ver;
+}
+
+sub os_detect_notify_type {
+	# see if we have growl 1.2 (free), growl 1.3 (paid) or neither (will use CocoaDialog in that case)
+	my $ps_raw = `ps -ef`;
+	my $notify_type = '';
+	
+	if ($ps_raw =~ /Growl\.app/) { $notify_type = './growlnotify-1.3'; }
+	elsif ($ps_raw =~ /GrowlHelperApp\.app/) { $notify_type = './growlnotify-1.2'; }
+	else { $notify_type = './CocoaDialog/Contents/MacOS/CocoaDialog'; }
+	
+	return $notify_type;
+}
+
 sub call_keychain {
 	# shell out to security binary to create or locate passwords in keychain
 	my ($self, $action, $args) = @_;
