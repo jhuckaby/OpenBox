@@ -28,14 +28,12 @@ use POSIX qw/:sys_wait_h setsid/;
 
 chdir dirname($0);
 
-# OS detect for FSevents shared lib support
-my $sys_pro_raw = `/usr/sbin/system_profiler SPSoftwareDataType`;
-my $os_ver = ($sys_pro_raw =~ /OS X 10.8/) ? '10.8' : '10.9';
-`ln -snf auto-$os_ver auto`;
-
 require 'JSON.pm';
 require 'Daemon.pm';
 require 'utils.pl';
+
+os_detect_auto_lib_setup();
+
 eval 'use Mac::FSEvents;';
 eval 'use IO::Pty::Easy;';
 
@@ -85,13 +83,7 @@ foreach my $temp_file (glob($resident->{config}->{TempDir} . '/project-status-*.
 	}
 }
 
-# see if we have growl 1.2 (free), growl 1.3 (paid) or neither (will use CocoaDialog in that case)
-my $ps_raw = `ps -ef`;
-my $notify_type = '';
-if ($ps_raw =~ /Growl\.app/) { $notify_type = './growlnotify-1.3'; }
-elsif ($ps_raw =~ /GrowlHelperApp\.app/) { $notify_type = './growlnotify-1.2'; }
-else { $notify_type = './CocoaDialog/Contents/MacOS/CocoaDialog'; }
-$resident->{notify_type} = $notify_type;
+$resident->{notify_type} = os_detect_notify_type();
 
 ##
 # Setup preforking HTTP server
@@ -791,7 +783,10 @@ sub check_dir {
 			$self->log_debug(8, "Copying URL to clipboard: $clip_url");
 			
 			my $base_clip_cmd = $self->{config}->{BaseClipCommand};
-			`echo "$clip_url" | $base_clip_cmd`;
+			# `echo "$clip_url" | $base_clip_cmd`; # Includes newline!
+			my $cfh = FileHandle->new("|$base_clip_cmd");
+			$cfh->print( $clip_url );
+			$cfh->close();
 		}
 		
 		$self->rsync( $project, $base_dir, $num_files );
